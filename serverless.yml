@@ -1,0 +1,30 @@
+service: appointmentChecker
+
+provider:
+    stage: prod
+    name: aws
+    region: us-east-1
+    runtime: provided.al2
+    deploymentMethod: direct # fastest deployment method
+    environment:
+        APP_ENV: prod
+
+plugins:
+    - ./vendor/bref/bref
+
+functions:
+    oneMinuteCron:
+        handler: bin/console
+        layers:
+            - ${bref:layer.php-82} # PHP runtime
+            - ${bref:layer.console}
+        events:
+            - schedule:
+                  rate: rate(1 minute)
+                  input: '"app:check-appt --location=5002 --days=120"'
+
+# Exclude files from deployment
+package:
+    patterns:
+        - '!tests/**'
+        - '!node_modules/**'

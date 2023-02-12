@@ -1,0 +1,13 @@
+services:
+
+  localphp:
+    container_name: localphp
+    environment:
+      - USER
+    image: local-php
+    volumes:
+      - ~/Projects/Personal:/httpd/apps:delegated
+    working_dir: /httpd/apps/appointment-checker
+    tty: true
+    stdin_open: true
+    command: bash
